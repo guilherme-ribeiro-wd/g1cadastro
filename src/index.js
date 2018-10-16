@@ -3,8 +3,6 @@ import ReactDOM from 'react-dom';
 import './index.css';
 //import App from './App';
 import * as serviceWorker from './serviceWorker';
-// import update from 'immutability-helper';
-// import TextField from '@material-ui/core/TextField';
 import Form from './comps/Form';
 var $ = require("jquery");
 

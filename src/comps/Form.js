@@ -1,7 +1,5 @@
 import React from 'react';
-import { elements } from '../dom/base';
 import InputMask from 'react-input-mask';
-
 var $ = require("jquery");
 
 export default class Form extends React.Component{
@@ -16,17 +14,19 @@ export default class Form extends React.Component{
         email: "",
     };
 
-    estados = ['Acre', 'Alagoas', 'Amapá', 'Amazonas', 'Bahia', 'Ceará', 'Distrito Federal',
-                'Espírito Santo', 'Goiás', 'Maranhão', 'Mato Grosso', 'Mato Grosso do Sul',
-                'Minas Gerais', 'Pará', 'Paraíba', 'Paraná', 'Pernambuco', 'Piauí', 'Rio de Janeiro',
-                'Rio Grande do Norte', 'Rio Grande do Sul', 'Rondônia', 'Roraima', 'Santa Catarina',
-                'São Paulo', 'Sergipe', 'Tocantins'
+    estados = [
+        'Acre', 'Alagoas', 'Amapá', 'Amazonas', 'Bahia', 'Ceará', 'Distrito Federal',
+        'Espírito Santo', 'Goiás', 'Maranhão', 'Mato Grosso', 'Mato Grosso do Sul',
+        'Minas Gerais', 'Pará', 'Paraíba', 'Paraná', 'Pernambuco', 'Piauí', 'Rio de Janeiro',
+        'Rio Grande do Norte', 'Rio Grande do Sul', 'Rondônia', 'Roraima', 'Santa Catarina',
+        'São Paulo', 'Sergipe', 'Tocantins'
     ];
 
     change = (e) => {
         this.setState({
             [e.target.name]: e.target.value
         });
+        this.typingValidation(e.target.name, e.target.value);
     }
 
     emptyField = (field) => {
@@ -57,7 +57,7 @@ export default class Form extends React.Component{
     validation() {
         let isError = false;
 
-        if(this.emptyField(this.state.tel) || this.state.tel.length < 16) {
+        if(this.state.tel.length < 16) {
             isError = true;
             document.getElementById('TF').focus();
             document.getElementById('STF').style.visibility = "visible";
@@ -97,7 +97,7 @@ export default class Form extends React.Component{
             document.getElementById('SEN').style.visibility = "hidden";
         }
 
-        if(this.emptyField(this.state.cnpj) || this.state.cnpj.length < 18) {
+        if(this.state.cnpj.length < 18) {
             isError = true;
             document.getElementById('CNPJ').focus();
             document.getElementById('SCNPJ').style.visibility = "visible";
@@ -105,7 +105,7 @@ export default class Form extends React.Component{
             document.getElementById('SCNPJ').style.visibility = "hidden";
         }
 
-        if(this.emptyField(this.state.nFantasia) || this.state.nFantasia.length < 5) {
+        if(this.state.nFantasia.length < 5) {
             isError = true;
             document.getElementById('NF').focus();
             document.getElementById('SNF').style.visibility = "visible";
@@ -113,7 +113,7 @@ export default class Form extends React.Component{
             document.getElementById('SNF').style.visibility = "hidden";
         }
 
-        if(this.emptyField(this.state.rSocial) || this.state.rSocial.length < 5) {
+        if(this.state.rSocial.length < 5) {
             isError = true;
             document.getElementById('RS').focus();
             document.getElementById('SRS').style.visibility = "visible";
@@ -124,10 +124,75 @@ export default class Form extends React.Component{
         return isError;
     };
 
+    typingValidation(field, value) {
+        if (field === 'rSocial') {
+            if (value.length < 5) {
+                document.getElementById('SRS').style.visibility = "visible";
+            } else {
+                document.getElementById('SRS').style.visibility = "hidden";
+            }
+        }
+    
+        if (field === 'nFantasia') {
+            if (value.length < 5) {
+                document.getElementById('SNF').style.visibility = "visible";
+            } else {
+                document.getElementById('SNF').style.visibility = "hidden";
+            }
+        }
+    
+        if (field === 'cnpj') {
+            if (value.length < 18) {
+                document.getElementById('SCNPJ').style.visibility = "visible";
+            } else {
+                document.getElementById('SCNPJ').style.visibility = "hidden";
+            }
+        }
+    
+        if (field === 'ender') {
+            if(this.emptyField(value)) {
+                document.getElementById('SEN').style.visibility = "visible";
+            } else {
+                document.getElementById('SEN').style.visibility = "hidden";
+            }
+        }
+    
+        if (field === 'cidade') {
+            if(this.emptyField(value)) {
+                document.getElementById('SCI').style.visibility = "visible";
+            } else {
+                document.getElementById('SCI').style.visibility = "hidden";
+            }
+        }
+    
+        if (field === 'estado') {
+            if(!this.checkEstado(value)) {
+                document.getElementById('SES').style.visibility = "visible";
+            } else {
+                document.getElementById('SES').style.visibility = "hidden";
+            }
+        }
+    
+        if (field === 'email') {
+            if(this.checkEmail(value)) {
+                document.getElementById('SEM').style.visibility = "visible";
+            } else {
+                document.getElementById('SEM').style.visibility = "hidden";
+            }
+        }
+    
+        if (field === 'tel') {
+            if(value.length < 16) {
+                document.getElementById('STF').style.visibility = "visible";
+            } else {
+                document.getElementById('STF').style.visibility = "hidden";
+            }
+        }
+    }
+
     onSubmit = (e) => {
         e.preventDefault();
         const err = this.validation();
-        // console.log(this.state);
         if(!err) {
             this.setState({
                 rSocial: "",
@@ -145,7 +210,7 @@ export default class Form extends React.Component{
     estadosOption(estados) {
         const options = [];
         for (let i = 0; i < estados.length; i++) {
-            options.push(<option value={estados[i]}/>);
+            options.push(<option key={i} value={estados[i]}/>);
         }
         return options;
     }
@@ -207,7 +272,7 @@ export default class Form extends React.Component{
                     </p>
                     <p>
                         <label htmlFor="">Email:</label>
-                        <input type="email" id="EM" name="email" 
+                        <input type="email" id="EM" name="email" pattern="^(([-\w\d]+)(\.[-\w\d]+)*@([-\w\d]+)(\.[-\w\d]+)*(\.([a-zA-Z]{2,5}|[\d]{1,3})){1,2})$"
                         value={this.state.email} onChange={e=> this.change(e)}/>
                         <br/>
                         <span id="SEM">E-mail inválido</span>
