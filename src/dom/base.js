@@ -1,0 +1,18 @@
+export const elements =  {
+    inputRS: document.getElementById('RS'),
+    spanSRS:  document.getElementById('RS'),
+    inputNF: document.getElementById('NF'),
+    spanSNF:  document.getElementById('SNF'),
+    inputCNPJ: document.getElementById('CNPJ'),
+    spanSCNPJ:  document.getElementById('CNPJ'),
+    inputEN: document.getElementById('EN'),
+    spanSEN:  document.getElementById('EN'),
+    inputCI: document.getElementById('CI'),
+    spanSCI:  document.getElementById('CI'),
+    inputES: document.getElementById('ES'),
+    spanSES:  document.getElementById('ES'),
+    inputEM: document.getElementById('EM'),
+    spanSEM:  document.getElementById('EM'),
+    inputTF: document.getElementById('TF'),
+    spanSTF:  document.getElementById('TF'),
+}
