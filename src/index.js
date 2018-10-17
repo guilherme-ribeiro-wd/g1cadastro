@@ -3,8 +3,7 @@ import ReactDOM from 'react-dom';
 // import './index.css';
 //import App from './App';
 import * as serviceWorker from './serviceWorker';
-import Form from './comps/Form';
-import { FormInstance } from './bootstrap-teste/Form';
+import { FormInstance } from './comps/Form';
 
 var $ = require("jquery");
 
@@ -43,7 +42,7 @@ class Cadastro extends React.Component {
 
     renderForm() {
         return (
-            <Form />
+            <FormInstance />
         )
     }
 

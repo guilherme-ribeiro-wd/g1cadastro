@@ -1,18 +1,32 @@
 import React from 'react';
-import InputMask from 'react-input-mask';
+import {
+    FormControl, FormGroup, ControlLabel, HelpBlock, Checkbox, Radio, Button, Col, Form
+} from 'react-bootstrap';
 var $ = require("jquery");
+// window.$ = window.jQuery = require('jquery');
+// var mask = require('jquery-mask-plugin');
+// $.mask = mask;
+// window.mask = mask;
+require('jquery-mask-plugin');
 
-export default class Form extends React.Component{
-    state = {
-        rSocial: "",
-        nFantasia: "",
-        cnpj: "",
-        ender: "",
-        cidade: "",
-        estado: "",
-        tel: "",
-        email: "",
-    };
+const smI = 4;
+const smL = 2;
+export default class Form extends React.Component {
+    constructor(props) {
+        super(props);
+        this.change = this.change.bind(this);
+
+        this.state = {
+            rSocial: "",
+            nFantasia: "",
+            cnpj: "",
+            ender: "",
+            cidade: "",
+            estado: "",
+            tel: "",
+            email: "",
+        };
+    }
 
     estados = [
         'Acre', 'Alagoas', 'Amapá', 'Amazonas', 'Bahia', 'Ceará', 'Distrito Federal',
@@ -26,13 +40,16 @@ export default class Form extends React.Component{
         this.setState({
             [e.target.name]: e.target.value
         });
-        this.typingValidation(e.target.name, e.target.value);
+        // this.typingValidation(e.target.name, e.target.value);
     }
 
-    emptyField = (field) => {
-        if (field.length <= 0) {return true};
-        return false;
-    }
+    estadosOption(estados) {
+        const options = [];
+        for (let i = 0; i < estados.length; i++) {
+            options.push(<option key={i} value={estados[i]}>{estados[i]}</option>);
+        }
+        return options;
+    };
 
     checkEmail = (email) => {
         email = email.toLowerCase();
@@ -46,153 +63,118 @@ export default class Form extends React.Component{
         return false; 
     }
 
-    checkEstado = (estado) => {
-        for (let i = 0; i < this.estados.length; i++) {
-            if (estado === this.estados[i])
-                return true;
+    typingValidation(field) {
+        if (field === 'rSocial') {
+            if (this.state.rSocial.length > 0 && this.state.rSocial.length < 5) return 'error'; 
+            else if (this.state.rSocial.length >= 5) return 'success'; else return null;
         }
-        return false;
+        if (field === 'nFantasia') {
+            if (this.state.nFantasia.length > 0 && this.state.nFantasia.length < 5) return 'error'; 
+            else if (this.state.nFantasia.length >= 5) return 'success'; else return null;
+        }
+        if (field === 'cnpj') {
+            if (this.state.cnpj.length > 0 && this.state.cnpj.length < 18) return 'error'; 
+            else if (this.state.cnpj.length === 18) return 'success'; else return null;
+        }
+        if (field === 'ender') {
+            if(this.state.ender.length > 0 && this.state.ender.length < 1) return 'error';
+            else if (this.state.ender >= 1) return 'success'; return null;
+        }
+        if (field === 'cidade') {
+            if(this.state.cidade.length > 0 && this.state.cidade.length < 1) return 'error';
+            else if (this.state.cidade >= 1) return 'success'; return null;
+        }
+        if (field === 'estado') {
+            if(this.state.estado.length > 0 && this.state.estado === 'Selecione...') 
+            return 'error'; 
+            else if (this.state.estado.length > 1) return 'success'; else return null;
+        }
+        if (field === 'email') {
+            if(this.state.email.length > 0 && this.checkEmail(this.state.email)) 
+            return 'error'; 
+            else if (this.state.email.length > 1) return 'success'; return null;
+        }
+        if (field === 'tel') {
+            if(this.state.tel.length > 0 && this.state.tel.length < 16) return 'error'; 
+            else if (this.state.tel.length === 16) return 'success'; else return null;
+        }
     }
 
-    validation() {
-        let isError = false;
+    submitValidation() {
+        let error = false;
 
         if(this.state.tel.length < 16) {
-            isError = true;
-            document.getElementById('TF').focus();
-            document.getElementById('STF').style.visibility = "visible";
+            error = true;
+            document.getElementById('tel').focus();
+            // document.getElementById('STF').style.visibility = "visible";
         } else {
-            document.getElementById('STF').style.visibility = "hidden";
+            // document.getElementById('STF').style.visibility = "hidden";
         }
         
         if(this.checkEmail(this.state.email)) {
-            isError = true;
-            document.getElementById('EM').focus();
-            document.getElementById('SEM').style.visibility = "visible";
+            error = true;
+            document.getElementById('email').focus();
+            // document.getElementById('SEM').style.visibility = "visible";
         } else {
-            document.getElementById('SEM').style.visibility = "hidden";
+            // document.getElementById('SEM').style.visibility = "hidden";
         }
         
-        if(!this.checkEstado(this.state.estado)) {
-            isError = true;
-            document.getElementById('ES').focus();
-            document.getElementById('SES').style.visibility = "visible";
+        if(this.state.estado === 'Selecione...' || this.state.estado.length < 1) {
+            error = true;
+            document.getElementById('estado').focus();
+            // document.getElementById('SES').style.visibility = "visible";
         } else {
-            document.getElementById('SES').style.visibility = "hidden";
+            // document.getElementById('SES').style.visibility = "hidden";
+        }
+        console.log(this.state.estado);
+        if(this.state.cidade < 1) {
+            error = true;
+            document.getElementById('cidade').focus();
+            // document.getElementById('SCI').style.visibility = "visible";
+        } else {
+            // document.getElementById('SCI').style.visibility = "hidden";
         }
 
-        if(this.emptyField(this.state.cidade)) {
-            isError = true;
-            document.getElementById('CI').focus();
-            document.getElementById('SCI').style.visibility = "visible";
+        if(this.state.ender < 1) {
+            error = true;
+            document.getElementById('ender').focus();
+            // document.getElementById('SEN').style.visibility = "visible";
         } else {
-            document.getElementById('SCI').style.visibility = "hidden";
-        }
-
-        if(this.emptyField(this.state.ender)) {
-            isError = true;
-            document.getElementById('EN').focus();
-            document.getElementById('SEN').style.visibility = "visible";
-        } else {
-            document.getElementById('SEN').style.visibility = "hidden";
+            // document.getElementById('SEN').style.visibility = "hidden";
         }
 
         if(this.state.cnpj.length < 18) {
-            isError = true;
-            document.getElementById('CNPJ').focus();
-            document.getElementById('SCNPJ').style.visibility = "visible";
+            error = true;
+            document.getElementById('cnpj').focus();
+            // document.getElementById('SCNPJ').style.visibility = "visible";
         } else {
-            document.getElementById('SCNPJ').style.visibility = "hidden";
+            // document.getElementById('SCNPJ').style.visibility = "hidden";
         }
 
         if(this.state.nFantasia.length < 5) {
-            isError = true;
-            document.getElementById('NF').focus();
-            document.getElementById('SNF').style.visibility = "visible";
+            error = true;
+            document.getElementById('nFantasia').focus();
+            // document.getElementById('SNF').style.visibility = "visible";
         } else {
-            document.getElementById('SNF').style.visibility = "hidden";
+            // document.getElementById('SNF').style.visibility = "hidden";
         }
 
         if(this.state.rSocial.length < 5) {
-            isError = true;
-            document.getElementById('RS').focus();
-            document.getElementById('SRS').style.visibility = "visible";
+            error = true;
+            document.getElementById('rSocial').focus();
+            // document.getElementById('SRS').style.visibility = "visible";
         } else {
-            document.getElementById('SRS').style.visibility = "hidden";
+            // document.getElementById('SRS').style.visibility = "hidden";
         }
 
-        return isError;
-    };
+        return error;
 
-    typingValidation(field, value) {
-        if (field === 'rSocial') {
-            if (value.length < 5) {
-                document.getElementById('SRS').style.visibility = "visible";
-            } else {
-                document.getElementById('SRS').style.visibility = "hidden";
-            }
-        }
-    
-        if (field === 'nFantasia') {
-            if (value.length < 5) {
-                document.getElementById('SNF').style.visibility = "visible";
-            } else {
-                document.getElementById('SNF').style.visibility = "hidden";
-            }
-        }
-    
-        if (field === 'cnpj') {
-            if (value.length < 18) {
-                document.getElementById('SCNPJ').style.visibility = "visible";
-            } else {
-                document.getElementById('SCNPJ').style.visibility = "hidden";
-            }
-        }
-    
-        if (field === 'ender') {
-            if(this.emptyField(value)) {
-                document.getElementById('SEN').style.visibility = "visible";
-            } else {
-                document.getElementById('SEN').style.visibility = "hidden";
-            }
-        }
-    
-        if (field === 'cidade') {
-            if(this.emptyField(value)) {
-                document.getElementById('SCI').style.visibility = "visible";
-            } else {
-                document.getElementById('SCI').style.visibility = "hidden";
-            }
-        }
-    
-        if (field === 'estado') {
-            if(!this.checkEstado(value)) {
-                document.getElementById('SES').style.visibility = "visible";
-            } else {
-                document.getElementById('SES').style.visibility = "hidden";
-            }
-        }
-    
-        if (field === 'email') {
-            if(this.checkEmail(value)) {
-                document.getElementById('SEM').style.visibility = "visible";
-            } else {
-                document.getElementById('SEM').style.visibility = "hidden";
-            }
-        }
-    
-        if (field === 'tel') {
-            if(value.length < 16) {
-                document.getElementById('STF').style.visibility = "visible";
-            } else {
-                document.getElementById('STF').style.visibility = "hidden";
-            }
-        }
     }
 
-    onSubmit = (e) => {
+    submit = (e) => {
         e.preventDefault();
-        const err = this.validation();
+        const err = this.submitValidation();
+
         if(!err) {
             this.setState({
                 rSocial: "",
@@ -207,89 +189,95 @@ export default class Form extends React.Component{
         }
     }
     
-    estadosOption(estados) {
-        const options = [];
-        for (let i = 0; i < estados.length; i++) {
-            options.push(<option key={i} value={estados[i]}/>);
-        }
-        return options;
-    }
     render() {
-        $("#file").change(function() {
-            const filename = this.file[0].name
-            console.log(filename);
+        $(document).ready(function($) {
+            $('#cnpj').mask('99.999.999/9999-99');
+            $('#tel').mask('+55 99 9999-9999');
         });
-
+        
         return (
-            <form>
-                <fieldset id="idInfoEmp">
-                    <legend>Informações da Empresa</legend>
-                    <p>
-                        <label htmlFor="">Razão Social:</label>
-                        <input type="text" id="RS" name="rSocial" 
-                        value={this.state.rSocial} onChange={e=> this.change(e)}/>
-                        <br/>
-                        <span id="SRS">Razão Social inválida. Min: 5 caracteres</span>
-                    </p>
-                    <p>
-                        <label htmlFor="">Nome Fantasia:</label>
-                        <input type="text" id="NF" name="nFantasia" 
-                        value={this.state.nFantasia} onChange={e=> this.change(e)}/>
-                        <br/>
-                        <span id="SNF">Nome Fantasia inválida. Min: 5 caracteres</span>
-                        
-                    </p>
-                    <p>
-                        <label htmlFor="">CNPJ:</label>
-                        <InputMask mask="99.999.999/9999-99" maskChar="" type="text" id="CNPJ" name="cnpj" 
-                        value={this.state.cnpj} onChange={e=> this.change(e)}/>
-                        <br/>
-                        <span id="SCNPJ">CNPJ inválido</span>
-                    </p>
-                    <p>
-                        <label htmlFor="">Endereço:</label>
-                        <input type="text" id="EN" name="ender" 
-                        value={this.state.ender} onChange={e=> this.change(e)}/>
-                        <br/>
-                        <span id="SEN">Informe o Endereço</span>
-                    </p>
-                    <p>
-                        <label htmlFor="">Cidade:</label>
-                        <input type="text" id="CI" name="cidade" 
-                        value={this.state.cidade} onChange={e=> this.change(e)}/>
-                        <br/>
-                        <span id="SCI">Informe a Cidade</span>
-                    </p>
-                    <p>
-                        <label htmlFor="">Estado:</label>
-                        <input id="ES" name="estado" 
-                        value={this.state.estado} list="estados" onChange={e=> this.change(e)}/>
-                        <br/>
-                        <datalist id="estados">
-                            {this.estadosOption(this.estados)};
-                        </datalist>
-                        <span id="SES">Estado inválido</span>
-                    </p>
-                    <p>
-                        <label htmlFor="">Email:</label>
-                        <input type="email" id="EM" name="email" pattern="^(([-\w\d]+)(\.[-\w\d]+)*@([-\w\d]+)(\.[-\w\d]+)*(\.([a-zA-Z]{2,5}|[\d]{1,3})){1,2})$"
-                        value={this.state.email} onChange={e=> this.change(e)}/>
-                        <br/>
-                        <span id="SEM">E-mail inválido</span>
-                    </p>
-                    <p>
-                        <label htmlFor="">Telefone:</label>
-                        <InputMask mask="+5\5 99 9999-9999" maskChar="" type="tel" id="TF" name="tel" 
-                        value={this.state.tel} onChange={e=> this.change(e)}/>
-                        <br/>
-                        <span id="STF">Telefone inválido</span>
-                    </p>
-                    <label htmlFor="file" className="btn">Envie o logo da empresa</label>
-                    <input id="file" type="file" className="pic" accept="image/*"/>
-                    <img src="http://placehold.it/180" alt="logo"/>
-                    <button type="submit" onClick={e => this.onSubmit(e)}>Confirmar Cadastro</button>
-                </fieldset>
-            </form>
+            <Form horizontal>
+                <FormGroup controlId="rSocial" validationState={this.typingValidation('rSocial')}>
+                    <Col componentClass={ControlLabel} sm={smL}>
+                    Razão Social
+                    </Col>
+                    <Col sm={smI}>
+                    <FormControl name="rSocial" type="text" placeholder="Razão Social" value={this.state.rSocial} onChange={e => this.change(e)}/>
+                    </Col>
+                </FormGroup>
+
+                <FormGroup controlId="nFantasia" validationState={this.typingValidation('nFantasia')}>
+                    <Col componentClass={ControlLabel} sm={smL}>
+                    Nome Fantasia
+                    </Col>
+                    <Col sm={smI}>
+                    <FormControl name="nFantasia" type="text" placeholder="Nome Fantasia" value={this.state.nFantasia} onChange={e => this.change(e)}/>
+                    </Col>
+                </FormGroup>
+
+                <FormGroup controlId="cnpj" validationState={this.typingValidation('cnpj')}>
+                    <Col componentClass={ControlLabel} sm={smL}>
+                    CNPJ
+                    </Col>
+                    <Col sm={smI}>
+                    <FormControl name="cnpj" type="text" placeholder="CNPJ" value={this.state.cnpj} onChange={e => this.change(e)}/>
+                    </Col>
+                </FormGroup>
+
+                <FormGroup controlId="ender" validationState={this.typingValidation('ender')}>
+                    <Col componentClass={ControlLabel} sm={smL}>
+                    Endereço
+                    </Col>
+                    <Col sm={smI}>
+                    <FormControl name="ender" type="text" placeholder="Endereço" value={this.state.ender} onChange={e => this.change(e)}/>
+                    </Col>
+                </FormGroup>
+
+                <FormGroup controlId="cidade" validationState={this.typingValidation('cidade')}>
+                    <Col componentClass={ControlLabel} sm={smL}>
+                    Cidade
+                    </Col>
+                    <Col sm={smI}>
+                    <FormControl name="cidade" type="text" placeholder="Cidade" value={this.state.cidade} onChange={e => this.change(e)}/>
+                    </Col>
+                </FormGroup>
+
+                <FormGroup controlId="estado" validationState={this.typingValidation('estado')}>
+                    <Col componentClass={ControlLabel} sm={smL}>
+                    Estado
+                    </Col>
+                    <Col sm={smI}>
+                    <FormControl name="estado" componentClass="select" value={this.state.estado} onChange={e => this.change(e)}>
+                        <option value="Selecione...">Selecione...</option>
+                        {this.estadosOption(this.estados)}
+                    </FormControl>
+                    </Col>
+                </FormGroup>
+
+                <FormGroup controlId="email" validationState={this.typingValidation('email')}>
+                    <Col componentClass={ControlLabel} sm={smL}>
+                    E-mail
+                    </Col>
+                    <Col sm={smI}>
+                    <FormControl name="email" type="email" placeholder="E-mail" value={this.state.email} onChange={e => this.change(e)}/>
+                    </Col>
+                </FormGroup>
+
+                <FormGroup controlId="tel" validationState={this.typingValidation('tel')}>
+                    <Col componentClass={ControlLabel} sm={smL}>
+                    Telefone
+                    </Col>
+                    <Col sm={smI}>
+                    <FormControl name="tel" type="tel" placeholder="Telefone" value={this.state.tel} onChange={e => this.change(e)}/>
+                    </Col>
+                </FormGroup>
+
+                <FormGroup>
+                    <Col smOffset={2} sm={smI}>
+                    <Button type="submit" onClick={e => this.submit(e)}>Confirmar Cadastro</Button>
+                    </Col>
+                </FormGroup>
+            </Form>
         )
     }
 }
