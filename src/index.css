@@ -91,7 +91,7 @@ fieldset {
   border-radius: 6px;
 }
 
-input {
+/* input {
   font-weight: normal;
   font-size: 11pt;
   background-color: rgba(255, 255, 255, .8);
@@ -99,7 +99,7 @@ input {
   margin-left: 10px;
   border-radius: 10px;
   padding: 2.5px;
-}
+} */
 
 input:focus {
   outline: none;
@@ -131,9 +131,6 @@ button {
   background-color:#077D9B;
   color: white;
   font-size: 11pt;
-  position: absolute;
-  left: 540px;
-  top: 680px;
 }
 
 button:hover {

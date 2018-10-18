@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-    FormControl, FormGroup, ControlLabel, HelpBlock, Checkbox, Radio, Button, Col, Form
+    FormControl, FormGroup, ControlLabel, HelpBlock, Button, Col, Form
 } from 'react-bootstrap';
 var $ = require("jquery");
 // window.$ = window.jQuery = require('jquery');
@@ -11,7 +11,7 @@ require('jquery-mask-plugin');
 
 const smI = 4;
 const smL = 2;
-export default class Form extends React.Component {
+export default class FormInstance extends React.Component {
     constructor(props) {
         super(props);
         this.change = this.change.bind(this);

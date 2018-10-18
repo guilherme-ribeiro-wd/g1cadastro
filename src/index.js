@@ -1,9 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-// import './index.css';
+import './index.css';
 //import App from './App';
 import * as serviceWorker from './serviceWorker';
-import { FormInstance } from './comps/Form';
+import FormInstance from './comps/Form';
 
 var $ = require("jquery");
 
@@ -70,7 +70,7 @@ class Cadastro extends React.Component {
 }
 
 
-ReactDOM.render(<FormInstance />, document.getElementById('root'));
+ReactDOM.render(<Cadastro />, document.getElementById('root'));
 
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.
