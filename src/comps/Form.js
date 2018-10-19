@@ -26,6 +26,7 @@ export default class FormInstance extends React.Component {
             tel: "",
             email: "",
             file: "",
+            imagePreviewUrl: "",
         };
     }
 
@@ -65,61 +66,89 @@ export default class FormInstance extends React.Component {
     }
 
     typingValidation(field) {
+        
         if (field === 'rSocial') {
             if (this.state.rSocial.length > 0 && this.state.rSocial.length < 5) {
-                document.getElementById('rSocial').style.outline = "none";
+                this.removeOutline(field);
                 return 'error'; 
-            } else if (this.state.rSocial.length >= 5) return 'success'; else return null;
+            } else if (this.state.rSocial.length >= 5) {
+                this.removeOutline(field);
+                return 'success';  
+            } else return null;
 
         }
+
         if (field === 'nFantasia') {
             if (this.state.nFantasia.length > 0 && this.state.nFantasia.length < 5) {
-                document.getElementById('nFantasia').style.outline = "none";
+                this.removeOutline(field);
                 return 'error';
-            } else if (this.state.nFantasia.length >= 5) return 'success'; else return null;
+            } else if (this.state.nFantasia.length >= 5) {
+                this.removeOutline(field);
+                return 'success'; 
+            } else return null;
         }
+
         if (field === 'cnpj') {
+            
             if (this.state.cnpj.length > 0 && this.state.cnpj.length < 18) {
-                document.getElementById('cnpj').style.outline = "none";
+                this.removeOutline(field);
                 return 'error';
-            } else if (this.state.cnpj.length === 18) return 'success'; else return null;
+            } else if (this.state.cnpj.length === 18) {
+                this.removeOutline(field);
+                return 'success';
+            } else return null;
         }
+        
         if (field === 'ender') {
             if(this.state.ender.length > 0 && this.state.ender.length < 1) {    
                 return 'error';
             } else if (this.state.ender >= 1) {
-                document.getElementById('ender').style.outline = "none";
+                this.removeOutline(field);
                 return 'success'; 
             } else return null;
         }
+
         if (field === 'cidade') {
             if(this.state.cidade.length > 0 && this.state.cidade.length < 1) {
                 return 'error';
             } else if (this.state.cidade >= 1) {
-                document.getElementById('cidade').style.outline = "none";
+                this.removeOutline(field);
                 return 'success'; 
             } else return null;
         }
+
         if (field === 'estado') {
             if(this.state.estado.length > 0 && this.state.estado === 'Selecione...') {
                 return 'error';
             } else if (this.state.estado.length > 1) {
-                document.getElementById('estado').style.outline = "none";    
+                this.removeOutline(field);
                 return 'success';
             } else return null;
         }
+
         if (field === 'email') {
             if(this.state.email.length > 0 && this.checkEmail(this.state.email)){
-                document.getElementById('email').style.outline = "none"; 
+                this.removeOutline(field);
                 return 'error';
-            } else if (this.state.email.length > 1) return 'success'; return null;
+            } else if (this.state.email.length > 1) {
+                this.removeOutline(field)
+                return 'success'; 
+            } else return null;
         }
+
         if (field === 'tel') {
             if(this.state.tel.length > 0 && this.state.tel.length < 16) {
-                document.getElementById('tel').style.outline = "none";
+                this.removeOutline(field);
                 return 'error';
-            } else if (this.state.tel.length === 16) return 'success'; else return null;
+            } else if (this.state.tel.length === 16) {
+                this.removeOutline(field)
+                return 'success'; 
+            } else return null;
         }
+    }
+
+    removeOutline(field) {
+        document.getElementById(field).style.outline = "none";
     }
 
     submitValidation() {
@@ -172,11 +201,17 @@ export default class FormInstance extends React.Component {
             document.getElementById('rSocial').style.outline = "2px solid red";
         }
 
+        if(this.state.imagePreviewUrl === '') {
+            error = true;
+            alert('Selecione um logo da empresa!');
+        }
+        
         return error;
     }
 
     submit = (e) => {
         e.preventDefault();
+        console.log(this.state);
         const err = this.submitValidation();
 
         if(!err) {
@@ -190,27 +225,25 @@ export default class FormInstance extends React.Component {
                 tel: "",
                 email: "",
                 file: "",
+                imagePreviewUrl: "",
             });
         }
     }
 
-    readURL(input) {
-        console.log(input);
-        if (input.files && input.files[0]) {
-            var reader = new FileReader();
-            reader.onload = function(e) {
-                $('#logo')
-                .prop('src', e.target.result)
-                .width(180)
-                .height(180);
-            };
-
-            reader.readAsDataURL(input.files[0]);
+    _handleImageChange(e) {
+        e.preventDefault();
+    
+        let reader = new FileReader();
+        let file = e.target.files[0];
+    
+        reader.onloadend = () => {
+          this.setState({
+            file: file,
+            imagePreviewUrl: reader.result
+          });
         }
-    }
 
-    fileChangedHandler = (e) => {
-        this.setState({file: e.target.files[0]})
+        reader.readAsDataURL(file);
     }
 
     render() {
@@ -218,6 +251,14 @@ export default class FormInstance extends React.Component {
             $('#cnpj').mask('99.999.999/9999-99');
             $('#tel').mask('+55 99 9999-9999');
         });
+
+        let {imagePreviewUrl} = this.state;
+        let $imagePreview = null;
+        if (imagePreviewUrl) {
+        $imagePreview = (<img src={imagePreviewUrl} />);
+        } else {
+            $imagePreview = (<img id="logo" src="http://www.agion-oros.eu/wp-content/uploads/2018/02/180x180.jpg" alt="logo"/>);
+        }
         
         return (
             <Form horizontal>
@@ -305,10 +346,11 @@ export default class FormInstance extends React.Component {
                     </FormGroup>
 
                     <FormGroup>
-                        <img id="logo" src="http://www.agion-oros.eu/wp-content/uploads/2018/02/180x180.jpg" alt="logo"/>
+                        {/* <img id="logo" src="http://www.agion-oros.eu/wp-content/uploads/2018/02/180x180.jpg" alt="logo"/> */}
+                        {$imagePreview}
                         <label htmlFor="pic" id="lblBtn" className="btn btn-default">Envie o logo da empresa</label>
                         <FormControl id="pic" name="logo" type="file" accept="image/*" 
-                        onChange={e => this.fileChangedHandler(e)}/>
+                        onChange={e => this._handleImageChange(e)}/>
                     </FormGroup>
 
                     <FormGroup>
