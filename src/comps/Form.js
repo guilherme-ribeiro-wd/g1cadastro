@@ -65,6 +65,10 @@ export default class FormInstance extends React.Component {
         return false; 
     }
 
+    removeOutline(field) {
+        document.getElementById(field).style.outline = "none";
+    }
+
     typingValidation(field) {
         
         if (field === 'rSocial') {
@@ -147,8 +151,9 @@ export default class FormInstance extends React.Component {
         }
     }
 
-    removeOutline(field) {
-        document.getElementById(field).style.outline = "none";
+    focusOutline(field) {
+        document.getElementById(field).focus();
+        document.getElementById(field).style.outline = "2px solid red";
     }
 
     submitValidation() {
@@ -156,49 +161,41 @@ export default class FormInstance extends React.Component {
 
         if(this.state.tel.length < 16) {
             error = true;
-            document.getElementById('tel').focus();
-            document.getElementById('tel').style.outline = "2px solid red";
+            this.focusOutline('tel');
         }
         
         if(this.checkEmail(this.state.email)) {
             error = true;
-            document.getElementById('email').focus();
-            document.getElementById('email').style.outline = "2px solid red";
+            this.focusOutline('email');
         }
         
         if(this.state.estado === 'Selecione...' || this.state.estado.length < 1) {
             error = true;
-            document.getElementById('estado').focus();
-            document.getElementById('estado').style.outline = "2px solid red";
+            this.focusOutline('estado');
         }
 
         if(this.state.cidade < 1) {
             error = true;
-            document.getElementById('cidade').focus();
-            document.getElementById('cidade').style.outline = "2px solid red";
+            this.focusOutline('cidade');
         }
 
         if(this.state.ender < 1) {
             error = true;
-            document.getElementById('ender').focus();
-            document.getElementById('ender').style.outline = "2px solid red";
+            this.focusOutline('ender');
         }
         if(this.state.cnpj.length < 18) {
             error = true;
-            document.getElementById('cnpj').focus();
-            document.getElementById('cnpj').style.outline = "2px solid red";
+            this.focusOutline('cnpj');
         } 
 
         if(this.state.nFantasia.length < 5) {
             error = true;
-            document.getElementById('nFantasia').focus();
-            document.getElementById('nFantasia').style.outline = "2px solid red";
+            this.focusOutline('nFantasia');
         }
 
         if(this.state.rSocial.length < 5) {
             error = true;
-            document.getElementById('rSocial').focus();
-            document.getElementById('rSocial').style.outline = "2px solid red";
+            this.focusOutline('rSocial');
         }
 
         if(this.state.imagePreviewUrl === '') {
@@ -255,7 +252,7 @@ export default class FormInstance extends React.Component {
         let {imagePreviewUrl} = this.state;
         let $imagePreview = null;
         if (imagePreviewUrl) {
-        $imagePreview = (<img src={imagePreviewUrl} />);
+        $imagePreview = (<img src={imagePreviewUrl} alt="logo"/>);
         } else {
             $imagePreview = (<img id="logo" src="http://www.agion-oros.eu/wp-content/uploads/2018/02/180x180.jpg" alt="logo"/>);
         }
@@ -346,7 +343,6 @@ export default class FormInstance extends React.Component {
                     </FormGroup>
 
                     <FormGroup>
-                        {/* <img id="logo" src="http://www.agion-oros.eu/wp-content/uploads/2018/02/180x180.jpg" alt="logo"/> */}
                         {$imagePreview}
                         <label htmlFor="pic" id="lblBtn" className="btn btn-default">Envie o logo da empresa</label>
                         <FormControl id="pic" name="logo" type="file" accept="image/*" 
